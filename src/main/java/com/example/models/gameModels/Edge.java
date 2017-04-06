@@ -32,7 +32,6 @@ public class Edge extends Geometry{
     private boolean isOccupied;
     private OwnedTransport aTransport;
 
-
     public Edge(String pId)
     {
         super(pId);

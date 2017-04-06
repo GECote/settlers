@@ -67,40 +67,27 @@ public class GameController {
     }
 
 
-
     @MessageMapping("/placesettlement")
     @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
+        // TODO Check if player has enough resources
+
+        Intersection Checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean valid = GameManager.checkSettlementSetupEligibility(Checker,pNew.getColor());
+
+        if(valid)
+        {
+            // TODO Spend players resources
+            // TODO Add settlement to Intersection
         }
-        aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
-
-        //if move valid
-             pNew.setValid(true);
-        //else move invald
-            //pNew.setValid(false);
-
+        pNew.setValid(valid);
         return pNew;
     }
 
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+
         pNew.setValid(true);
         return pNew;
     }
@@ -108,18 +95,40 @@ public class GameController {
     @MessageMapping("/placeroad")
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
+
+        // TODO Check if player has enough resources
+
+        System.out.println(pNew.getId());
+        Edge Checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean valid = GameManager.checkRoadSetupEligibility(Checker,pNew.getColor());
+
+        if(valid){
+            // TODO Spend players resources
+            // TODO Add road to edge
         }
-        aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));*/
-        pNew.setValid(true);
+        pNew.setValid(valid);
         return pNew;
     }
+
+    @MessageMapping("/placeship")
+    @SendTo("/topic/ship")
+    public ViewPiece placeShip(ViewPiece pNew, Principal caller){
+
+        // TODO Check if player has enough resources
+
+        System.out.println(pNew.getId());
+        Edge Checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean valid= GameManager.checkShipSetupEligibility(Checker,pNew.getColor());
+
+        if(valid){
+            // TODO Spend players resources
+            // TODO Add ship to edge
+        }
+        pNew.setValid(valid);
+        return pNew;
+    }
+
+    // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
@@ -306,7 +315,7 @@ public class GameController {
 
 
         Hex aHex;
-        SeaHex seaHex = new SeaHex(pHex.getId());
+        LandHex aLandHex = new LandHex(pHex.getId(),6,TerrainType.Fields);
         //System.out.println(seaHex.getId());
        // System.out.println("Hexagon");
       /*  JSONArray aArray = new JSONArray(bigJson);
@@ -350,7 +359,7 @@ public class GameController {
                     aHex = new SeaHex(pHex.getId());
             }
 */
-            GameManager.getGame().getBoard().getHexes().put(seaHex.getId(), seaHex);
+            GameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
       //  }
 
     }

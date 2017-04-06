@@ -2248,7 +2248,6 @@ function init() {
 
         }
 
-
     }
     if(startingPlayer.match(myUsername)) {
         readySetNeighbours();

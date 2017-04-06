@@ -40,7 +40,10 @@ public class Intersection extends Geometry {
         return aKnight;
     }
 
-    public void setKnight(){ }
+    public void setKnight(OwnedKnight pKnight){
+        isOccupied = true;
+        aKnight = pKnight;
+    }
 
     public void setBuilding(OwnedBuilding pOccupant)
     {

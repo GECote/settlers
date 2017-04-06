@@ -366,7 +366,7 @@ public class GameManager {
 
     public void setupSettlement(Player pPlayer, Intersection pIntersection){
         assert (!pIntersection.getOccupancyFlag());
-        assert (checkIntersectionSetupEligibility(pIntersection));
+       // assert (checkIntersectionSetupEligibility(pIntersection));
 
         OwnedBuilding settlement = pPlayer.removeBuilding(Unit.Building.SETTLEMENT);
         pIntersection.setBuilding(settlement);
@@ -374,7 +374,7 @@ public class GameManager {
 
     public void setupCity(Player pPlayer, Intersection pIntersection){
         assert(!pIntersection.getOccupancyFlag());
-        assert(checkIntersectionSetupEligibility(pIntersection));
+        //assert(checkIntersectionSetupEligibility(pIntersection));
 
         OwnedBuilding city = pPlayer.removeBuilding(Unit.Building.CITY);
         pIntersection.setBuilding(city);
@@ -382,37 +382,106 @@ public class GameManager {
 
     public void setupRoad(Player pPlayer, Edge pEdge){
         assert(!pEdge.getOccupancyFlag());
-        assert(checkEdgeSetupEligibility(pEdge, pPlayer));
+       // assert(checkEdgeSetupEligibility(pEdge, pPlayer));
 
         OwnedTransport road = pPlayer.removeTransport(Unit.Transport.ROAD);
         pEdge.setTransport(road);
     }
 
-    private boolean checkIntersectionSetupEligibility(Intersection pIntersection){
-        boolean eligible = true;
-        List<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
-        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
-            if (intersection.getOccupancyFlag()){
-                eligible = false;
-                break;
+    public static boolean checkSettlementSetupEligibility(Intersection pIntersection, String pColor){
+        if(pIntersection.getOccupancyFlag())
+            return false;
+
+        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
+        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+
+        for(Intersection aIntersection:iNeighbours) {
+            if(aIntersection.getBuilding() != null)
+                return  false;
+        }
+
+        for(Edge aEdge:eNeighbours){
+            if(aEdge.getOccupancyFlag()){
+                if(aEdge.getTransport().getOwner().getColor()==pColor)
+                    return true;
             }
         }
-        return eligible;
+        return false;
     }
 
-    private boolean checkEdgeSetupEligibility(Edge pEdge, Player pPlayer){
-        List<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
-        boolean eligible = false;
-        for (Intersection intersection: neighbourIntersections) {
-            if (intersection.getOccupancyFlag()) {
-                if (intersection.getBuilding().getOwner() == pPlayer) {
-                    eligible = true;
-                    break;
+    public static boolean checkCitySetupEligibility(Intersection pIntersection, String pColor){
+
+          if(pIntersection.getBuilding() != null ){
+              if(pIntersection.getBuilding().getOwner().getColor()==pColor && pIntersection.getBuilding().isCity()==false)
+                  return true;
+          }
+        return false;
+    }
+
+    public static boolean checkRoadSetupEligibility(Edge pEdge, String pColor){
+        if(pEdge.getOccupancyFlag())
+            return false;
+
+        List<Edge> Neighbours = pEdge.getEdgeNeighbours();
+        List<Hex> hNeighbours = pEdge.getHexNeighbours();
+        List<Intersection> iNeighbours = pEdge.getIntersectionNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours){
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water = false;
+        }
+        if(water) {
+            return false;
+        }
+        for(Edge aEdge:Neighbours){
+            if(aEdge.getOccupancyFlag()) {
+                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getColor() == pColor) {
+                    return true;
                 }
             }
         }
-        return eligible;
+        for(Intersection aIntersection:iNeighbours){
+            if(aIntersection.getOccupancyFlag()) {
+                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getColor() == pColor) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
+
+    public static boolean checkShipSetupEligibility(Edge pEdge, String pColor){
+        if(pEdge.getOccupancyFlag())
+            return false;
+        List<Edge> Neighbours = pEdge.getEdgeNeighbours();
+        List<Hex> hNeighbours = pEdge.getHexNeighbours();
+        List<Intersection> iNeighbours = pEdge.getIntersectionNeighbours();
+        boolean water = false;
+        for(Hex aHex:hNeighbours){
+            if(aHex.getTerrainType() == TerrainType.Sea)
+                water = true;
+        }
+        if(!water) {
+            return false;
+        }
+        for(Edge aEdge:Neighbours){
+            if(aEdge.getOccupancyFlag()) {
+                if (aEdge.getTransport().getUnit() == Unit.Transport.SHIP && aEdge.getTransport().getOwner().getColor() == pColor) {
+                    return true;
+                }
+            }
+        }
+        for(Intersection aIntersection:iNeighbours){
+            if(aIntersection.getOccupancyFlag()) {
+                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getColor() == pColor) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
     public void playerTrade(Player pPlayer1, Player pPlayer2, HashMap<StealableCard.Resource, Integer> pResources1,
                             HashMap<StealableCard.Resource, Integer> pResources2,
