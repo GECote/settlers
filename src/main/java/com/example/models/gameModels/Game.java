@@ -38,14 +38,8 @@ public class Game {
     @OneToOne
     private Board aBoard;
 
-    @ElementCollection
-    private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
-    @ElementCollection
-    private Map<StealableCard.Commodity, Integer> aCommodityCards = new HashMap<>();
-
     private GamePhase aPhase;
     private int aBarbarianPosition;
-    private int aGoldBank;
     private int aArmyStrength;
     private int aBarbarianStrength;
     private DiceNumber aRedDice;
@@ -58,40 +52,13 @@ public class Game {
         aBoard = pBoard;
         aVPsToWin = pVPsToWin;
         aBarbarianPosition = 6;
-        aGoldBank = 50;
         aPlayers = pPlayers;
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
         aTurnCounter = 1;
-        aResourceCards = new HashMap<>();
-        aCommodityCards = new HashMap<>();
-        for (StealableCard.Resource resource : StealableCard.Resource.values()){
-            aResourceCards.put(resource, StealableCard.Resource.maxResources());
-        }
-        for (StealableCard.Commodity commodity : StealableCard.Commodity.values()){
-            aCommodityCards.put(commodity, StealableCard.Commodity.maxCommodities());
-        }
     }
 
-    /*public Game(){
-        aVPsToWin =10;
-        aBarbarianPosition = 6;
-        aGoldBank = 50;
-        aPhase = GamePhase.SetupRoundOne;
-        aArmyStrength = 0;
-        aBarbarianStrength = 0;
-        aTurnCounter = 1;
-        aResourceCards = new HashMap<>();
-        aCommodityCards = new HashMap<>();
-        for (StealableCard.Resource resource : StealableCard.Resource.values()){
-            aResourceCards.put(resource, StealableCard.Resource.maxResources());
-        }
-        for (StealableCard.Commodity commodity : StealableCard.Commodity.values()){
-            aCommodityCards.put(commodity, StealableCard.Commodity.maxCommodities());
-        }
-    }
-        */
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;
     }
@@ -114,10 +81,6 @@ public class Game {
 
     public void setArmyStrength(int pStrength){
         aArmyStrength = pStrength;
-    }
-
-    public void setGoldBank(int pGoldBank){
-        aGoldBank = pGoldBank;
     }
 
     public void updateBarbarianPosition(){
@@ -164,18 +127,6 @@ public class Game {
 
     public int getArmyStrength(){
         return aArmyStrength;
-    }
-
-    public Map<StealableCard.Resource, Integer> getResourceCards(){
-        return aResourceCards;
-    }
-
-    public Map<StealableCard.Commodity, Integer> getCommodityCards(){
-        return aCommodityCards;
-    }
-
-    public int getGoldBank(){
-        return aGoldBank;
     }
 
     public GamePhase getPhase(){

@@ -1,11 +1,12 @@
 package com.example.models.gameModels;
 
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 /**
  * Created by G on 17/02/27.
@@ -15,12 +16,16 @@ public abstract class Geometry {
     public Geometry(){}
     @Id
     protected String aId; // should be private final
-    @OneToMany
-    protected String[] splitId; // should be private final
+    protected String Prefix;
+    protected int X;
+    protected int Y;
 
     protected Geometry(String pId){
         aId = pId;
-        splitId = pId.split("_");
+        String[] splitId = pId.split("_");
+        Prefix = splitId[0];
+        X = Integer.parseInt(splitId[1]);
+        Y = Integer.parseInt(splitId[2]);
     }
 
     @OneToMany
@@ -33,15 +38,15 @@ public abstract class Geometry {
     public String getId(){return aId;};
 
     public String getPrefix(){
-        return  splitId[0];
+        return Prefix;
     }
 
     public int getX(){
-        return  Integer.parseInt(splitId[1]);
+        return X;
     }
 
     public int getY(){
-        return  Integer.parseInt(splitId[2]);
+        return Y;
     }
 
     public List<Edge> getEdgeNeighbours(){return EdgeNeighbours;};

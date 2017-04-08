@@ -1,6 +1,5 @@
 package com.example.models.gameModels;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import java.util.Map;
 

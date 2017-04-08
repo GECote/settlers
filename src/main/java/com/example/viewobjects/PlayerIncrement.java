@@ -14,7 +14,6 @@ public class PlayerIncrement {
     private int p1Cloth;
     private int p1Coin;
 
-
     private int p2Wood;
     private int p2Ore;
     private int p2Brick;
